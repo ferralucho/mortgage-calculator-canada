@@ -41,8 +41,9 @@ func (input *CalculationInput) Validate() rest_errors.RestErr {
 		return rest_errors.NewBadRequestError("invalid annual interest rate")
 	}
 
-	if input.AmortizationPeriod == 0 {
-		return rest_errors.NewBadRequestError("invalid amortization period")
+	isValidPeriod, returnValue := validateAmortizationPeriod(input.AmortizationPeriod)
+	if isValidPeriod {
+		return returnValue
 	}
 
 	input.PaymentSchedule = strings.TrimSpace(strings.ToLower(input.PaymentSchedule))
@@ -51,4 +52,11 @@ func (input *CalculationInput) Validate() rest_errors.RestErr {
 	}
 
 	return nil
+}
+
+func validateAmortizationPeriod(amortizationPeriod uint64) (bool, rest_errors.RestErr) {
+	if amortizationPeriod == 0 || amortizationPeriod <= 5 || amortizationPeriod >= 30 || amortizationPeriod%5 != 0 {
+		return true, rest_errors.NewBadRequestError("invalid amortization period")
+	}
+	return false, nil
 }
