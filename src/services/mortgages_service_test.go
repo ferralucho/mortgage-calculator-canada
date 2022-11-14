@@ -30,7 +30,7 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 			},
 			&mortgages.CalculationOutput{
 				TotalMortgageTotal: 835000,
-				MortgagePayment:    2783.33,
+				MortgagePayment:    5059.94,
 				DifferenceRatio:    92.78,
 			},
 			nil,
@@ -46,7 +46,7 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 			},
 			&mortgages.CalculationOutput{
 				TotalMortgageTotal: 835000,
-				MortgagePayment:    3437.42,
+				MortgagePayment:    5482.99,
 				DifferenceRatio:    92.78,
 			},
 			nil,
