@@ -23,8 +23,8 @@ type CalculationOutput struct {
 type PaymentSchedule string
 
 const (
-	AcceleratedBiWeekly PaymentSchedule = "acceleratedBiWeekly"
-	BiWeekly            PaymentSchedule = "biWeekly"
+	AcceleratedBiWeekly PaymentSchedule = "accelerated_bi_weekly"
+	BiWeekly            PaymentSchedule = "bi_weekly"
 	Monthly             PaymentSchedule = "monthly"
 )
 
