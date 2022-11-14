@@ -15,9 +15,11 @@ type CalculationInput struct {
 }
 
 type CalculationOutput struct {
-	TotalMortgageTotal float64 `json:"total_mortgage_total"`
-	MortgagePayment    float64 `json:"mortgage_payment"`
-	DifferenceRatio    float64 `json:"difference_ratio"`
+	MortgageTotal           float64 `json:"mortgage_total"`
+	MortgageBeforeChmc      float64 `json:"mortgage_before_chmc"`
+	MortgagePaymentSchedule float64 `json:"mortgage_payment_schedule"`
+	DifferenceRatio         float64 `json:"difference_ratio"`
+	ChmcInsuranceTotal      float64 `json:"chmc_insurance_total"`
 }
 
 type PaymentSchedule string

@@ -26,4 +26,5 @@ curl --location --request GET 'localhost:8082/mortgage/formula?property_price=90
 ## Expected Output
 
 ● payment per payment schedule
+
 ● an error if the inputs are not valid. This includes cases where the down payment is not large enough

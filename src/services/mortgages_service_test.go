@@ -20,7 +20,7 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 		wantError rest_errors.RestErr
 	}{
 		{
-			"",
+			"down payment not enough, should throw an error",
 			mortgages.CalculationInput{
 				PropertyPrice:      900000,
 				DownPayment:        65000,
@@ -28,26 +28,24 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 				AmortizationPeriod: 20,
 				PaymentSchedule:    string(mortgages.Monthly),
 			},
-			&mortgages.CalculationOutput{
-				TotalMortgageTotal: 835000,
-				MortgagePayment:    5059.94,
-				DifferenceRatio:    92.78,
-			},
 			nil,
+			rest_errors.NewBadRequestError("invalid down payment"),
 		},
 		{
-			"",
+			"correct inputs, should not throw an error",
 			mortgages.CalculationInput{
 				PropertyPrice:      900000,
-				DownPayment:        65000,
+				DownPayment:        94000,
 				AnnualInterestRate: 4.94,
 				AmortizationPeriod: 20,
 				PaymentSchedule:    string(mortgages.Monthly),
 			},
 			&mortgages.CalculationOutput{
-				TotalMortgageTotal: 835000,
-				MortgagePayment:    5482.99,
-				DifferenceRatio:    92.78,
+				MortgageTotal:           806000,
+				MortgagePaymentSchedule: 5292.56,
+				DifferenceRatio:         89.56,
+				MortgageBeforeChmc:      806000,
+				ChmcInsuranceTotal:      0,
 			},
 			nil,
 		},
@@ -61,9 +59,11 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 				PaymentSchedule:    string(mortgages.Monthly),
 			},
 			&mortgages.CalculationOutput{
-				TotalMortgageTotal: 720000,
-				MortgagePayment:    4289.13,
-				DifferenceRatio:    80,
+				MortgageTotal:           720000,
+				MortgagePaymentSchedule: 4289.13,
+				DifferenceRatio:         80,
+				MortgageBeforeChmc:      720000,
+				ChmcInsuranceTotal:      0,
 			},
 			nil,
 		},
@@ -77,6 +77,7 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 			if !reflect.DeepEqual(got1, tt.wantError) {
 				t.Errorf("mortgagesService.GetCalculation() got1 = %v, want %v", got1, tt.wantError)
 			}
+
 		})
 	}
 }

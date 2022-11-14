@@ -37,11 +37,14 @@ func (s *mortgagesService) GetCalculation(input mortgages.CalculationInput) (*mo
 	principal := input.PropertyPrice - input.DownPayment
 	differenceRatio := (principal / input.PropertyPrice) * 100
 	paymentScheduleResult := getPaymentSchedule(input.AnnualInterestRate, uint64(input.AmortizationPeriod), paymentSchedulePeriod, principal)
+	chmcInsurance := 0
 
 	output := &mortgages.CalculationOutput{
-		TotalMortgageTotal: math.Round(principal*100) / 100,
-		MortgagePayment:    math.Round(paymentScheduleResult*100) / 100,
-		DifferenceRatio:    math.Round(differenceRatio*100) / 100,
+		MortgageTotal:           math.Round((principal+float64(chmcInsurance))*100) / 100,
+		MortgageBeforeChmc:      math.Round((principal-float64(chmcInsurance))*100) / 100,
+		MortgagePaymentSchedule: math.Round(paymentScheduleResult*100) / 100,
+		DifferenceRatio:         math.Round(differenceRatio*100) / 100,
+		ChmcInsuranceTotal:      float64(chmcInsurance),
 	}
 
 	return output, nil
@@ -51,4 +54,10 @@ func getPaymentSchedule(annualInterestRate float64, amortizationPeriod uint64, p
 	monthlyInterest := annualInterestRate / 100 / 12
 	periods := amortizationPeriod * paymentSchedulePeriod
 	return principal * ((monthlyInterest * math.Pow(1+monthlyInterest, float64(periods))) / (math.Pow(1+monthlyInterest, float64(periods)) - 1))
+}
+
+func isEligibleForChmcInsurance(input mortgages.CalculationInput) bool {
+	differenceRatio := (input.DownPayment * 100) / input.PropertyPrice
+
+	return !(differenceRatio >= 20 || input.PropertyPrice > 1000000 || input.AmortizationPeriod > 25)
 }
