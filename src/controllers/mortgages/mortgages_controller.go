@@ -2,6 +2,7 @@ package mortgages
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/ferralucho/mortgage-calculator-canada/src/domain/mortgages"
 	"github.com/ferralucho/mortgage-calculator-canada/src/services"
@@ -16,11 +17,33 @@ func GetCalculation(c *gin.Context) {
 	paymentSchedule := c.Query("payment_schedule")
 
 	input := new(mortgages.CalculationInput)
-	input.PropertyPrice = c.GetFloat64(propertyPrice)
-	input.DownPayment = c.GetFloat64(downPayment)
-	input.AnnualInterestRate = c.GetFloat64(annualInterestRate)
-	input.AmortizationPeriod = c.GetUint64(amortizationPeriod)
-	input.PaymentSchedule = c.Query(paymentSchedule)
+	var errParsing error
+
+	input.PropertyPrice, errParsing = strconv.ParseFloat(propertyPrice, 64)
+
+	if errParsing != nil {
+		c.JSON(400, errParsing)
+		return
+	}
+	input.DownPayment, errParsing = strconv.ParseFloat(downPayment, 64)
+
+	if errParsing != nil {
+		c.JSON(400, errParsing)
+		return
+	}
+	input.AnnualInterestRate, errParsing = strconv.ParseFloat(annualInterestRate, 64)
+
+	if errParsing != nil {
+		c.JSON(400, errParsing)
+		return
+	}
+	input.AmortizationPeriod, errParsing = strconv.ParseUint(amortizationPeriod, 10, 64)
+	input.PaymentSchedule = paymentSchedule
+
+	if errParsing != nil {
+		c.JSON(400, errParsing)
+		return
+	}
 
 	calculation, err := services.MortgagesService.GetCalculation(*input)
 	if err != nil {

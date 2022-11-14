@@ -20,15 +20,15 @@ type CalculationOutput struct {
 }
 
 func (input *CalculationInput) Validate() rest_errors.RestErr {
-	if input.PropertyPrice < 0 {
+	if input.PropertyPrice <= 0 {
 		return rest_errors.NewBadRequestError("invalid property price")
 	}
 
-	if input.DownPayment < 0 {
+	if input.DownPayment <= 0 {
 		return rest_errors.NewBadRequestError("invalid down payment")
 	}
 
-	if input.AnnualInterestRate < 0 {
+	if input.AnnualInterestRate <= 0 {
 		return rest_errors.NewBadRequestError("invalid annual interest rate")
 	}
 
