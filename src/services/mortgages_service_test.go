@@ -35,6 +35,22 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"",
+			mortgages.CalculationInput{
+				PropertyPrice:      900000,
+				DownPayment:        65000,
+				AnnualInterestRate: 4.94,
+				AmortizationPeriod: 20,
+				PaymentSchedule:    string(mortgages.Monthly),
+			},
+			&mortgages.CalculationOutput{
+				TotalMortgageTotal: 835000,
+				MortgagePayment:    3437.42,
+				DifferenceRatio:    92.78,
+			},
+			nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
