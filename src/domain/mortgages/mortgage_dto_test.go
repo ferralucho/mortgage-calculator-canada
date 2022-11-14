@@ -25,10 +25,10 @@ func TestCalculationInput_Validate(t *testing.T) {
 			nil,
 		},
 		{
-			"little downpayment no validation error",
+			"minimun downpayment no validation error",
 			&CalculationInput{
 				PropertyPrice:      100000,
-				DownPayment:        100,
+				DownPayment:        5000,
 				AnnualInterestRate: 1,
 				AmortizationPeriod: 10,
 				PaymentSchedule:    string(Monthly),
@@ -50,7 +50,7 @@ func TestCalculationInput_Validate(t *testing.T) {
 			"down payment is less than 5 percent, should throw an error",
 			&CalculationInput{
 				PropertyPrice:      100,
-				DownPayment:        1,
+				DownPayment:        4,
 				AnnualInterestRate: 1,
 				AmortizationPeriod: 10,
 				PaymentSchedule:    string(Monthly),
@@ -61,7 +61,7 @@ func TestCalculationInput_Validate(t *testing.T) {
 			"annual interest rate is 0, should throw an error",
 			&CalculationInput{
 				PropertyPrice:      100000,
-				DownPayment:        4300,
+				DownPayment:        43000,
 				AnnualInterestRate: 0,
 				AmortizationPeriod: 10,
 				PaymentSchedule:    string(Monthly),
@@ -72,7 +72,7 @@ func TestCalculationInput_Validate(t *testing.T) {
 			"amortization period less than 5, should throw an error",
 			&CalculationInput{
 				PropertyPrice:      100000,
-				DownPayment:        4300,
+				DownPayment:        43000,
 				AnnualInterestRate: 4,
 				AmortizationPeriod: 1,
 				PaymentSchedule:    string(Monthly),
@@ -83,7 +83,7 @@ func TestCalculationInput_Validate(t *testing.T) {
 			"amortization period is not divided by 5, should throw an error",
 			&CalculationInput{
 				PropertyPrice:      100000,
-				DownPayment:        4300,
+				DownPayment:        43000,
 				AnnualInterestRate: 4,
 				AmortizationPeriod: 7,
 				PaymentSchedule:    string(Monthly),

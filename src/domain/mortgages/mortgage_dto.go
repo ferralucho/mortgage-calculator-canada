@@ -29,7 +29,7 @@ const (
 )
 
 func (input *CalculationInput) Validate() rest_errors.RestErr {
-	if input.PropertyPrice <= 0 {
+	if input.PropertyPrice <= 0 || input.PropertyPrice >= 1000000000 {
 		return rest_errors.NewBadRequestError("invalid property price")
 	}
 
@@ -38,7 +38,7 @@ func (input *CalculationInput) Validate() rest_errors.RestErr {
 		return err
 	}
 
-	if input.AnnualInterestRate <= 0 {
+	if input.AnnualInterestRate <= 0 || input.AnnualInterestRate > 1000 {
 		return rest_errors.NewBadRequestError("invalid annual interest rate")
 	}
 
@@ -57,7 +57,7 @@ func (input *CalculationInput) Validate() rest_errors.RestErr {
 
 func validateDownPayment(input *CalculationInput) (bool, rest_errors.RestErr) {
 	differenceRatio := (input.DownPayment * 100) / input.PropertyPrice
-	if input.DownPayment <= 0 || differenceRatio < 5 {
+	if input.DownPayment <= 0 || input.DownPayment >= 1000000000 || differenceRatio < 5 || input.DownPayment >= input.PropertyPrice {
 		return false, rest_errors.NewBadRequestError("invalid down payment")
 	}
 	return true, nil
