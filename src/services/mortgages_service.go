@@ -23,20 +23,20 @@ func (s *mortgagesService) GetCalculation(input mortgages.CalculationInput) (*mo
 		return nil, err
 	}
 
-	paymentSchedulePeriod := 0
+	var paymentSchedulePeriod uint64
 
 	switch mortgages.PaymentSchedule(strings.ToLower(input.PaymentSchedule)) {
 	case mortgages.AcceleratedBiWeekly, mortgages.BiWeekly:
-		paymentSchedulePeriod = 2
+		paymentSchedulePeriod = 84
 	case mortgages.Monthly:
-		paymentSchedulePeriod = 1
+		paymentSchedulePeriod = 12
 	default:
 		return nil, rest_errors.NewBadRequestError("invalid payment schedule")
 	}
 
 	principal := input.PropertyPrice - input.DownPayment
 	differenceRatio := (principal / input.PropertyPrice) * 100
-	paymentScheduleResult := getPaymentSchedule(input.AnnualInterestRate, uint64(paymentSchedulePeriod), principal)
+	paymentScheduleResult := getPaymentSchedule(input.AnnualInterestRate, uint64(input.AmortizationPeriod), paymentSchedulePeriod, principal)
 
 	output := &mortgages.CalculationOutput{
 		TotalMortgageTotal: math.Round(principal*100) / 100,
@@ -47,8 +47,8 @@ func (s *mortgagesService) GetCalculation(input mortgages.CalculationInput) (*mo
 	return output, nil
 }
 
-func getPaymentSchedule(annualInterestRate float64, paymentSchedulePeriod uint64, principal float64) float64 {
+func getPaymentSchedule(annualInterestRate float64, amortizationPeriod uint64, paymentSchedulePeriod uint64, principal float64) float64 {
 	monthlyInterest := annualInterestRate / 100 / 12
-	periods := paymentSchedulePeriod * 12
-	return principal * ((monthlyInterest * math.Pow(1+monthlyInterest, float64(periods))) / math.Pow(1+monthlyInterest, float64(periods)))
+	periods := amortizationPeriod * paymentSchedulePeriod
+	return principal * ((monthlyInterest * math.Pow(1+monthlyInterest, float64(periods))) / (math.Pow(1+monthlyInterest, float64(periods)) - 1))
 }
