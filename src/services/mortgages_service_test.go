@@ -67,6 +67,24 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"15 year amortization period, minimun down payment with chmc, should not throw an error",
+			mortgages.CalculationInput{
+				PropertyPrice:      900000,
+				DownPayment:        90000,
+				AnnualInterestRate: 4.94,
+				AmortizationPeriod: 15,
+				PaymentSchedule:    string(mortgages.Monthly),
+			},
+			&mortgages.CalculationOutput{
+				MortgageTotal:           835110,
+				MortgagePaymentSchedule: 6380.14,
+				DifferenceRatio:         90,
+				MortgageBeforeChmc:      810000,
+				ChmcInsuranceTotal:      25110,
+			},
+			nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
