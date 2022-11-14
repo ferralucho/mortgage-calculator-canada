@@ -32,7 +32,7 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 			rest_errors.NewBadRequestError("invalid down payment"),
 		},
 		{
-			"correct inputs, should not throw an error",
+			"correct inputs with chmc insurance, should not throw an error",
 			mortgages.CalculationInput{
 				PropertyPrice:      900000,
 				DownPayment:        94000,
@@ -41,16 +41,16 @@ func Test_mortgagesService_GetCalculation(t *testing.T) {
 				PaymentSchedule:    string(mortgages.Monthly),
 			},
 			&mortgages.CalculationOutput{
-				MortgageTotal:           806000,
+				MortgageTotal:           830986,
 				MortgagePaymentSchedule: 5292.56,
 				DifferenceRatio:         89.56,
 				MortgageBeforeChmc:      806000,
-				ChmcInsuranceTotal:      0,
+				ChmcInsuranceTotal:      24986,
 			},
 			nil,
 		},
 		{
-			"",
+			"higher correct down payment without chmc, should not throw an error",
 			mortgages.CalculationInput{
 				PropertyPrice:      900000,
 				DownPayment:        180000,
