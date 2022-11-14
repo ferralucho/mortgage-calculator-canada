@@ -58,6 +58,17 @@ func TestCalculationInput_Validate(t *testing.T) {
 			rest_errors.NewBadRequestError("invalid down payment"),
 		},
 		{
+			"down payment too small for houses over 500k, should throw an error",
+			&CalculationInput{
+				PropertyPrice:      600000,
+				DownPayment:        48000,
+				AnnualInterestRate: 1,
+				AmortizationPeriod: 10,
+				PaymentSchedule:    string(Monthly),
+			},
+			rest_errors.NewBadRequestError("invalid down payment"),
+		},
+		{
 			"annual interest rate is 0, should throw an error",
 			&CalculationInput{
 				PropertyPrice:      100000,

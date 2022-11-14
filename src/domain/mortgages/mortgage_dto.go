@@ -57,7 +57,7 @@ func (input *CalculationInput) Validate() rest_errors.RestErr {
 
 func validateDownPayment(input *CalculationInput) (bool, rest_errors.RestErr) {
 	differenceRatio := (input.DownPayment * 100) / input.PropertyPrice
-	if input.DownPayment <= 0 || input.DownPayment >= 1000000000 || differenceRatio < 5 || input.DownPayment >= input.PropertyPrice {
+	if input.DownPayment <= 0 || input.DownPayment >= 1000000000 || differenceRatio < 5 || input.DownPayment >= input.PropertyPrice || (input.PropertyPrice > 500000 && differenceRatio < 10) {
 		return false, rest_errors.NewBadRequestError("invalid down payment")
 	}
 	return true, nil
