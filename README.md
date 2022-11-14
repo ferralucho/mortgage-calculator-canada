@@ -19,7 +19,9 @@ https://www.ratehub.ca/mortgage-payment-calculator
 
 ● payment schedule (accelerated bi-weekly, bi-weekly, monthly)
 
+```
 curl --location --request GET 'localhost:8082/mortgage/formula?property_price=900000&down_payment=65700&amortization_period=25&annual_interest_rate=5&payment_schedule=monthly'
+```
 
 ## Expected Output
 
