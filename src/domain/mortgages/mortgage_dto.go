@@ -33,17 +33,18 @@ func (input *CalculationInput) Validate() rest_errors.RestErr {
 		return rest_errors.NewBadRequestError("invalid property price")
 	}
 
-	if input.DownPayment <= 0 || input.DownPayment >= input.PropertyPrice {
-		return rest_errors.NewBadRequestError("invalid down payment")
+	isValidDownPayment, err := validateDownPayment(input)
+	if !isValidDownPayment {
+		return err
 	}
 
 	if input.AnnualInterestRate <= 0 {
 		return rest_errors.NewBadRequestError("invalid annual interest rate")
 	}
 
-	isValidPeriod, returnValue := validateAmortizationPeriod(input.AmortizationPeriod)
-	if isValidPeriod {
-		return returnValue
+	isValidPeriod, err := validateAmortizationPeriod(input.AmortizationPeriod)
+	if !isValidPeriod {
+		return err
 	}
 
 	input.PaymentSchedule = strings.TrimSpace(strings.ToLower(input.PaymentSchedule))
@@ -54,9 +55,17 @@ func (input *CalculationInput) Validate() rest_errors.RestErr {
 	return nil
 }
 
+func validateDownPayment(input *CalculationInput) (bool, rest_errors.RestErr) {
+	differenceRatio := (input.DownPayment * 100) / input.PropertyPrice
+	if input.DownPayment <= 0 || differenceRatio < 5 {
+		return false, rest_errors.NewBadRequestError("invalid down payment")
+	}
+	return true, nil
+}
+
 func validateAmortizationPeriod(amortizationPeriod uint64) (bool, rest_errors.RestErr) {
 	if amortizationPeriod == 0 || amortizationPeriod <= 5 || amortizationPeriod >= 30 || amortizationPeriod%5 != 0 {
-		return true, rest_errors.NewBadRequestError("invalid amortization period")
+		return false, rest_errors.NewBadRequestError("invalid amortization period")
 	}
-	return false, nil
+	return true, nil
 }
