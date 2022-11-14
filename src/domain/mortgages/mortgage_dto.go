@@ -17,14 +17,23 @@ type CalculationInput struct {
 type CalculationOutput struct {
 	TotalMortgageTotal float64 `json:"total_mortgage_total"`
 	MortgagePayment    float64 `json:"mortgage_payment"`
+	DifferenceRatio    float64 `json:"difference_ratio"`
 }
+
+type PaymentSchedule string
+
+const (
+	AcceleratedBiWeekly PaymentSchedule = "acceleratedBiWeekly"
+	BiWeekly            PaymentSchedule = "biWeekly"
+	Monthly             PaymentSchedule = "monthly"
+)
 
 func (input *CalculationInput) Validate() rest_errors.RestErr {
 	if input.PropertyPrice <= 0 {
 		return rest_errors.NewBadRequestError("invalid property price")
 	}
 
-	if input.DownPayment <= 0 {
+	if input.DownPayment <= 0 || input.DownPayment >= input.PropertyPrice {
 		return rest_errors.NewBadRequestError("invalid down payment")
 	}
 
