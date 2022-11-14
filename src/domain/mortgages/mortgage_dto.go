@@ -20,7 +20,21 @@ type CalculationOutput struct {
 }
 
 func (input *CalculationInput) Validate() rest_errors.RestErr {
-	input.PaymentSchedule = strings.TrimSpace(input.PaymentSchedule)
+	if input.PropertyPrice < 0 {
+		return rest_errors.NewBadRequestError("invalid property price")
+	}
+
+	if input.DownPayment < 0 {
+		return rest_errors.NewBadRequestError("invalid down payment")
+	}
+
+	if input.AnnualInterestRate < 0 {
+		return rest_errors.NewBadRequestError("invalid annual interest rate")
+	}
+
+	if input.AmortizationPeriod == 0 {
+		return rest_errors.NewBadRequestError("invalid amortization period")
+	}
 
 	input.PaymentSchedule = strings.TrimSpace(strings.ToLower(input.PaymentSchedule))
 	if input.PaymentSchedule == "" {
