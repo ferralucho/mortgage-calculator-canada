@@ -39,9 +39,9 @@ func (s *mortgagesService) GetCalculation(input mortgages.CalculationInput) (*mo
 	paymentScheduleResult := getPaymentSchedule(input.AnnualInterestRate, uint64(paymentSchedulePeriod), principal)
 
 	output := &mortgages.CalculationOutput{
-		TotalMortgageTotal: principal,
-		MortgagePayment:    paymentScheduleResult,
-		DifferenceRatio:    differenceRatio,
+		TotalMortgageTotal: math.Round(principal*100) / 100,
+		MortgagePayment:    math.Round(paymentScheduleResult*100) / 100,
+		DifferenceRatio:    math.Round(differenceRatio*100) / 100,
 	}
 
 	return output, nil
